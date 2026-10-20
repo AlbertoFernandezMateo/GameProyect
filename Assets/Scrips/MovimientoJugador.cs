@@ -23,7 +23,7 @@ public class MovimientoJugador : MonoBehaviour
     private Vector2 entradaX;
     private bool pendienteSalto;
     private bool estaTocandoSuelo;
-    private float longitudRaycast = 1f;
+    public float longitudRaycast = 1.2f;
 
     private void Awake() //se ejecuta antes que el start y se ejecuta aunque no este activo
     {
@@ -42,6 +42,12 @@ public class MovimientoJugador : MonoBehaviour
         entradaX = actionMover.action.ReadValue<Vector2>();
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, longitudRaycast, capaSuelo);
+
+         estaTocandoSuelo = hit.collider != null;
+
+        Color colorRayo = estaTocandoSuelo ? Color.green : Color.red; //Si esta tocando suelo es verde y si no toca suelo es rojo
+
+        Debug.DrawRay(transform.position, Vector2.down * longitudRaycast, colorRayo);
 
         if (actionSaltar.action.WasPressedThisFrame() && estaTocandoSuelo) //devuelve un true si se pulsa el boton espacio
         {
