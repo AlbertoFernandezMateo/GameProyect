@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 
@@ -18,12 +19,13 @@ public class ControlEnemigo : MonoBehaviour
 
 
 
-
     private Rigidbody2D fisica;
+
 
     private void Awake() 
     {
         fisica = GetComponent<Rigidbody2D>();
+       
     }
 
 
@@ -61,6 +63,8 @@ public class ControlEnemigo : MonoBehaviour
 
         fisica.MovePosition(Vector2.MoveTowards(fisica.position, posicionObjetivo, velocity * Time.fixedDeltaTime));
 
+
     }
 
+  
 }

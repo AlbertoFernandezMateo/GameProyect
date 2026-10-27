@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 [RequireComponent(typeof(Rigidbody2D))]
 public class MovimientoJugador : MonoBehaviour
 {
@@ -19,16 +21,22 @@ public class MovimientoJugador : MonoBehaviour
 
 
     private Rigidbody2D fisica; //Accedo a rigidbody y se si se ha pulsado una tecla 
+    private SpriteRenderer renderizador;
+
+    private Animator animador;
 
     private Vector2 entradaX;
     private bool pendienteSalto;
     private bool estaTocandoSuelo;
     public float longitudRaycast = 1.2f;
+    private float umbralCarrera = 0.1f;
 
     private void Awake() //se ejecuta antes que el start y se ejecuta aunque no este activo
     {
         //Detengo el componente Rigitbody del player para modificar posteriormente su linearvelocity
         fisica = GetComponent<Rigidbody2D>();
+        renderizador = GetComponent<SpriteRenderer>();
+        animador = GetComponent<Animator>();
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -53,7 +61,26 @@ public class MovimientoJugador : MonoBehaviour
         {
             pendienteSalto = true;
         }
+        AnimarJugador();
         
+    }
+
+    private void AnimarJugador()
+    {
+        if (animador == null) //ponemos que no pueda ser nulo
+        {
+            return;
+        }
+        if (!estaTocandoSuelo) //si no toca suelo ejecuta la animacion de saltar
+        {
+            animador.Play("JugadorSaltando");
+        }
+        else if (Mathf.Abs(fisica.linearVelocity.x) > umbralCarrera)
+        {
+            animador.Play("JugadorCorriendo");
+        }
+        else 
+            animador.Play("JugadorParado");
     }
 
     private void OnEnable()
@@ -109,5 +136,30 @@ public class MovimientoJugador : MonoBehaviour
 
         pendienteSalto = false;
 
+
+        OrientarSprite();
+
+
+
     }
+    private void OrientarSprite()
+    {
+        if (renderizador == null)
+        {
+            return;
+        }
+            
+        if (fisica.linearVelocity.x > 0)
+        {
+            renderizador.flipX = false;
+
+        }
+        else if (fisica.linearVelocity.x < 0)
+        {
+            renderizador.flipX = true;
+        }
+
+    }
+
+
 }
